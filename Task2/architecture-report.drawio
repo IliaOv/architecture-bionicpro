@@ -1,0 +1,100 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="report-arch" name="Reports architecture">
+    <mxGraphModel dx="1008" dy="611" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="820" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;fontSize=16;fontStyle=1;align=left;verticalAlign=middle;" value="BionicPRO — сервис отчётов: ETL (Airflow) → OLAP (ClickHouse) → API" vertex="1">
+          <mxGeometry height="30" width="900" x="40" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="user" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" value="Пользователь&#xa;(Android / Web UI)" vertex="1">
+          <mxGeometry height="80" width="40" x="50" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="frontend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Frontend (React)&#xa;кнопка «Get Report»&#xa;credentials: include" vertex="1">
+          <mxGeometry height="80" width="150" x="140" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="secbox" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#9673a6;dashed=1;verticalAlign=top;fontStyle=2;fontColor=#6a4a86;" value="Контур аутентификации (Task 1)" vertex="1">
+          <mxGeometry height="270" width="330" x="360" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="bff" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="bionicpro-auth (BFF)&#xa;сессии, PKCE, хранит токены&#xa;проксирует /api/reports с Bearer" vertex="1">
+          <mxGeometry height="90" width="180" x="380" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="keycloak" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="Keycloak (IdP/IAM)&#xa;OIDC · realm reports-realm&#xa;роли: prothetic_user…" vertex="1">
+          <mxGeometry height="40" width="180" x="380" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="redis" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="Redis&#xa;сессии/токены" vertex="1">
+          <mxGeometry height="80" width="70" x="610" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="reports-api&#xa;bearer-only · self-only&#xa;валидация JWT (JWKS)&#xa;чтение витрины из OLAP&#xa;ограничение по watermark" vertex="1">
+          <mxGeometry height="110" width="190" x="760" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="clickhouse" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="ClickHouse (OLAP)&#xa;reports.user_daily_report&#xa;PARTITION месяц · ORDER (username, date)&#xa;reports.etl_watermark" vertex="1">
+          <mxGeometry height="120" width="230" x="1110" y="375" as="geometry" />
+        </mxCell>
+        <mxCell id="airflowbox" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#647687;dashed=1;verticalAlign=top;fontStyle=2;" value="Apache Airflow — DAG reports_etl (@daily)" vertex="1">
+          <mxGeometry height="210" width="290" x="1010" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="t_create" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="create_mart&#xa;(DDL витрины + watermark)" vertex="1">
+          <mxGeometry height="35" width="250" x="1030" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="t_window" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="resolve_window&#xa;(watermark → диапазон дат)" vertex="1">
+          <mxGeometry height="35" width="250" x="1030" y="635" as="geometry" />
+        </mxCell>
+        <mxCell id="t_build" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="build_mart&#xa;Extract CRM+телеметрия → Transform (агрегация по клиенту/суткам) → Load" vertex="1">
+          <mxGeometry height="45" width="250" x="1030" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="t_wm" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="update_watermark" vertex="1">
+          <mxGeometry height="30" width="250" x="1030" y="735" as="geometry" />
+        </mxCell>
+        <mxCell id="srcbox" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#647687;dashed=1;verticalAlign=top;fontStyle=2;" value="Источники (OLTP)" vertex="1">
+          <mxGeometry height="220" width="330" x="600" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="crm" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="CRM (PostgreSQL)&#xa;crm.clients (username↔client)&#xa;crm.devices (протезы)" vertex="1">
+          <mxGeometry height="110" width="140" x="610" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="telemetry" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="DB телеметрии (PostgreSQL)&#xa;telemetry.readings&#xa;(показания датчиков)" vertex="1">
+          <mxGeometry height="110" width="140" x="780" y="597.5" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="user" style="endArrow=classic;html=1;" target="frontend">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="frontend" style="endArrow=classic;html=1;fontSize=10;" target="bff" value="session cookie">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="bff" style="endArrow=classic;html=1;fontSize=10;" target="keycloak" value="OIDC / PKCE">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="bff" style="endArrow=classic;html=1;fontSize=10;" target="redis">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="bff" style="endArrow=classic;html=1;fontSize=10;" target="api" value="GET /reports&#xa;Bearer JWT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="api" style="endArrow=open;html=1;dashed=1;fontSize=10;" target="keycloak" value="проверка подписи (JWKS)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="api" style="endArrow=classic;html=1;fontSize=10;" target="clickhouse" value="SELECT по username&#xa;(готовые строки)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="t_build" style="endArrow=none;html=1;fontSize=10;startArrow=classic;startFill=1;endFill=0;" target="crm" value="Extract">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="t_build" style="endArrow=none;html=1;fontSize=10;startArrow=classic;startFill=1;endFill=0;" target="telemetry" value="Extract">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="t_build" style="endArrow=classic;html=1;fontSize=10;" target="clickhouse" value="Load (INSERT)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="t_create" style="endArrow=classic;html=1;" target="t_window">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="t_window" style="endArrow=classic;html=1;" target="t_build">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="t_build" style="endArrow=classic;html=1;" target="t_wm">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

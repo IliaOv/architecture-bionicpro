@@ -1,0 +1,6 @@
+<clickhouse>
+  <!-- Для новых consumer group читать топик с начала (сиды CRM/телеметрии). -->
+  <kafka>
+    <auto_offset_reset>earliest</auto_offset_reset>
+  </kafka>
+</clickhouse>

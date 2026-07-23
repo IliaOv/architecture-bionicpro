@@ -1,2 +1,8 @@
 /postgres-keycloak-data
+/postgres-sources-data
+/postgres-airflow-data
+/clickhouse-data
+/minio-data
+/bionicpro-auth-data
 2024__yandex-architecture-sso.code-workspace
+.env
