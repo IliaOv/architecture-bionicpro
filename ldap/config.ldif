@@ -9,7 +9,7 @@ objectClass: top
 objectClass: organizationalUnit
 ou: Groups
 
-# Пользователи
+# Пользователи представительства (пароль: password)
 dn: uid=john.doe,ou=People,dc=example,dc=com
 objectClass: top
 objectClass: inetOrgPerson
@@ -28,7 +28,8 @@ uid: jane.smith
 mail: jane@example.com
 userPassword: password
 
-dn: uid=alex,ou=People,dc=example,dc=com
+dn: uid=alex.johnson,ou=People,dc=example,dc=com
+objectClass: top
 objectClass: inetOrgPerson
 cn: Alex
 sn: Johnson
@@ -36,14 +37,22 @@ uid: alex.johnson
 mail: alex@example.com
 userPassword: password
 
-# Роли
+# Группы = роли realm (маппинг Keycloak role-ldap-mapper)
 dn: cn=user,ou=Groups,dc=example,dc=com
+objectClass: top
 objectClass: groupOfNames
 cn: user
 member: uid=jane.smith,ou=People,dc=example,dc=com
 
 dn: cn=prothetic_user,ou=Groups,dc=example,dc=com
+objectClass: top
 objectClass: groupOfNames
 cn: prothetic_user
 member: uid=alex.johnson,ou=People,dc=example,dc=com
+member: uid=john.doe,ou=People,dc=example,dc=com
+
+dn: cn=administrator,ou=Groups,dc=example,dc=com
+objectClass: top
+objectClass: groupOfNames
+cn: administrator
 member: uid=john.doe,ou=People,dc=example,dc=com
